@@ -6,10 +6,10 @@ on:
     branches: ["main", "dev"]
     paths-ignore:
       # - ".github/workflows/**"
-      - "README.md"
-      - ".gitignore"
-      - "docs/**"
-      - ".github/**"
+      # - "README.md"
+      # - ".gitignore"
+      # - "docs/**"
+      # - ".github/**"
   pull_request:
     branches: ["main", "dev"]
   workflow_dispatch:
