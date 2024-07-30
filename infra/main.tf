@@ -5,21 +5,21 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../../modules/vpc"
+  source = "../modules/vpc"
   # Environment-specific variables
   vpc_cidr     = var.vpc_cidr
   env          = var.env
 }
 
 module "ecs" {
-  source = "../../modules/ecs"
+  source = "../modules/ecs"
   # Environment-specific variables
   vpc_id       = module.vpc.vpc_id
   cluster_name = "${local.env}-tenant-management-cluster"
 }
 
 module "rds" {
-  source = "../../modules/rds"
+  source = "../modules/rds"
   # Environment-specific variables
   vpc_id            = module.vpc.vpc_id
   subnet_ids        = module.vpc.private_subnet_ids
@@ -28,7 +28,7 @@ module "rds" {
 }
 
 module "api_gateway" {
-  source = "../../modules/api_gateway"
+  source = "../modules/api_gateway"
   # Environment-specific variables
   name = "${local.env}-tenant-management-api"
   description         = "API Gateway for tenant management"
