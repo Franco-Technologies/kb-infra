@@ -8,15 +8,16 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet_ids" {
-  description = "Subnet IDs for ECS tasks"
-  type        = list(string)
-}
+# variable "subnet_ids" {
+#   description = "Subnet IDs for ECS tasks"
+#   type        = list(string)
+# }
 
-variable "container_image" {
-  description = "Docker image for the application"
-  type        = string
-}
+
+# variable "container_image" {
+#   description = "Docker image for the application"
+#   type        = string
+# }
 
 variable "task_cpu" {
   description = "CPU units for the ECS task"
