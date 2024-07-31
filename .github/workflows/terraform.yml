@@ -4,12 +4,12 @@ on:
   #   Trigger the workflow on push or pull request, excluding changes to the workflow file itself.
   push:
     branches: ["main", "dev"]
-    paths-ignore:
-      # - ".github/workflows/**"
-      # - "README.md"
-      # - ".gitignore"
-      # - "docs/**"
-      # - ".github/**"
+    # paths-ignore:
+    # - ".github/workflows/**"
+    # - "README.md"
+    # - ".gitignore"
+    # - "docs/**"
+    # - ".github/**"
   pull_request:
     branches: ["main", "dev"]
   workflow_dispatch:
