@@ -71,7 +71,7 @@ module "ssm" {
   source = "./modules/ssm"
 
   # Environment-specific variables
-  param_name = "/${local.env}/${var.app_name}"
+  param_name = "/${var.app_name}/${local.env}/appvars"
   outputs = {
     vpc_id                    = module.vpc.vpc_id
     private_subnet_ids        = jsonencode(module.vpc.private_subnet_ids)
