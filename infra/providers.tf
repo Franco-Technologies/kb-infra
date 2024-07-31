@@ -16,12 +16,3 @@ provider "aws" {
     session_name = "CICD-Franco-Tech"
   }
 }
-
-provider "aws" {
-  alias  = "general"
-  region = var.region
-
-  assume_role {
-    role_arn = var.role
-  }
-}
