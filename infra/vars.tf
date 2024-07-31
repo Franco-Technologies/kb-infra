@@ -5,8 +5,8 @@ locals { vpc = var.is_prod_branch == true ? ["prod"] : ["non-prod"] }
 # (IGNORE) Required, but auto-populated via the upstream pipeline & your team CI variables
 ##########################################################################################
 
-variable "region" {default = "us-east-2"} # region in which your resources will be built
-variable "role" {type = string} # cicd builder role
+variable "region" { default = "us-east-2" } # region in which your resources will be built
+variable "role" { type = string }           # cicd builder role
 variable "dest_account_number" { type = string }
 
 # # Variables that are used broadly for all build patterns
@@ -16,9 +16,12 @@ variable "dest_account_number" { type = string }
 # variable "ci_project_name" {type = string}
 # variable "ci_user_email" {type = string}
 # variable "ci_commit_branch" {type = string}
-variable "is_prod_branch" {type = bool}
-variable "app_name" {type = string}
-variable "additional_inputs" {type = any}
+variable "is_prod_branch" { type = bool }
+variable "app_name" { type = string }
+variable "additional_inputs" {
+  type    = map(string)
+  default = {}
+}
 
 # # Required ecs fargate variables
 # variable "cluster" {type = string}
