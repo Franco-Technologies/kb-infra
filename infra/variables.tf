@@ -18,9 +18,4 @@ variable "db_instance_class" {
   type        = string
 }
 
-variable "is_prod_branch" {
-  description = "Flag to determine if the branch is prod"
-  type        = bool
-}
-
 # Add other environment-specific variables as needed
