@@ -33,7 +33,7 @@ module "api_gateway" {
   endpoint_types     = ["REGIONAL"]
   authorization      = "NONE"
   request_parameters = {}
-  stage_name         = local.env
+  stage_name         = var.env
   root_path_part     = "/"
   vpc_link_name      = "ecs-vpc-link"
   # target_arns        = [module.ecs.service_arn]
