@@ -14,14 +14,16 @@ module "ecs" {
   env    = var.env
 }
 
-# module "rds" {
-#   source = "./modules/rds"
-#   # Environment-specific variables
-#   vpc_id            = module.vpc.vpc_id
-#   subnet_ids        = module.vpc.private_subnet_ids
-#   db_instance_class = var.db_instance_class
-#   db_name           = "${local.env}_tenant_management"
-# }
+module "rds" {
+  source = "./modules/rds"
+  # Environment-specific variables
+  vpc_id            = module.vpc.vpc_id
+  subnet_ids        = module.vpc.private_subnet_ids
+  env               = var.env
+  db_instance_class = var.db_instance_class
+  db_username       = var.db_username
+  db_password       = var.db_password
+}
 
 # module "api_gateway" {
 #   source = "./modules/api_gateway"

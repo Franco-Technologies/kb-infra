@@ -18,4 +18,16 @@ variable "db_instance_class" {
   type        = string
 }
 
+variable "db_username" {
+  description = "RDS database username"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "RDS database password"
+  type        = string
+  default     = "admin123"
+}
+
 # Add other environment-specific variables as needed
