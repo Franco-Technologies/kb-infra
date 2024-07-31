@@ -7,6 +7,13 @@ module "vpc" {
   env      = local.env
 }
 
+module "ecr" {
+  source = "./modules/ecr"
+  # Environment-specific variables
+  app_name = var.app_name
+  env      = local.env
+}
+
 module "ecs" {
   source = "./modules/ecs"
   # Environment-specific variables
@@ -76,6 +83,7 @@ module "ssm" {
     vpc_id                    = module.vpc.vpc_id
     private_subnet_ids        = jsonencode(module.vpc.private_subnet_ids)
     default_security_group_id = module.vpc.default_security_group_id
+    ecr_repository_url        = module.ecr.ecr_repository_url
     ecs_cluster_arn           = module.ecs.cluster_arn
     load_balancer_dns_name    = module.load_balancer.load_balancer_dns_name
     listener_arn              = module.load_balancer.listener_arn

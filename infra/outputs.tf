@@ -11,6 +11,11 @@ output "default_security_group_id" {
   value = module.vpc.default_security_group_id
 }
 
+# ECR
+output "ecr_repository_url" {
+  value = module.ecr.ecr_repository_url
+}
+
 # ECS
 output "ecs_cluster_arn" {
   value = module.ecs.cluster_arn
