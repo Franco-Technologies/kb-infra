@@ -71,7 +71,7 @@ module "ssm" {
   param_name = "/${local.env}/${var.app_name}"
   outputs = {
     vpc_id                    = module.vpc.vpc_id
-    private_subnet_ids        = module.vpc.private_subnet_ids
+    private_subnet_ids        = jsonencode(module.vpc.private_subnet_ids)
     default_security_group_id = module.vpc.default_security_group_id
     ecs_cluster_arn           = module.ecs.cluster_arn
     load_balancer_dns_name    = module.load_balancer.load_balancer_dns_name
