@@ -25,21 +25,21 @@ module "rds" {
   db_password       = var.db_password
 }
 
-# module "api_gateway" {
-#   source = "./modules/api_gateway"
-#   # Environment-specific variables
-#   name               = "${local.env}-tenant-management-api"
-#   description        = "API Gateway for tenant management"
-#   endpoint_types     = ["REGIONAL"]
-#   authorization      = "NONE"
-#   request_parameters = {}
-#   stage_name         = local.env
-#   root_path_part     = "/"
-#   vpc_link_name      = "ecs-vpc-link"
-#   target_arns        = [module.ecs.service_arn]
-#   ecs_service_url    = module.ecs.service_url
-#   tags = {
-#     Environment = "dev"
-#     Project     = "example"
-#   }
-# }
+module "api_gateway" {
+  source = "./modules/api_gateway"
+  # Environment-specific variables
+  name               = "${local.env}-tenant-management-api"
+  description        = "API Gateway for tenant management"
+  endpoint_types     = ["REGIONAL"]
+  authorization      = "NONE"
+  request_parameters = {}
+  stage_name         = local.env
+  root_path_part     = "/"
+  vpc_link_name      = "ecs-vpc-link"
+  # target_arns        = [module.ecs.service_arn]
+  # ecs_service_url    = module.ecs.service_url
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
+}

@@ -51,12 +51,12 @@ variable "vpc_link_name" {
   default     = "ecs-vpc-link"
 }
 
-variable "target_arns" {
-  description = "The ARNs of the targets for the VPC Link"
-  type        = list(string)
-}
+# variable "target_arns" {
+#   description = "The ARNs of the targets for the VPC Link"
+#   type        = list(string)
+# }
 
-variable "ecs_service_url" {
-  description = "The URL of the ECS service"
-  type        = string
-}
+# variable "ecs_service_url" {
+#   description = "The URL of the ECS service"
+#   type        = string
+# }
