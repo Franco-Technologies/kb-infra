@@ -56,3 +56,21 @@ module "api_gateway" {
     Project     = "example"
   }
 }
+
+module "ssm" {
+  source = "./modules/ssm"
+  # Environment-specific variables
+  param_name = "/${local.env}/${var.app_name}"
+  outputs = {
+    vpc_id                    = module.vpc.vpc_id
+    private_subnet_ids        = module.vpc.private_subnet_ids
+    default_security_group_id = module.vpc.default_security_group_id
+    ecs_cluster_arn           = module.ecs.cluster_arn
+    load_balancer_dns_name    = module.load_balancer.load_balancer_dns_name
+    listener_arn              = module.load_balancer.listener_arn
+    load_balancer_arn         = module.load_balancer.load_balancer_arn
+    # rds_endpoint = module.rds.db_endpoint
+    api_gateway_rest_api_id      = module.api_gateway.rest_api_id
+    api_gateway_root_resource_id = module.api_gateway.root_resource_id
+  }
+}
