@@ -1,9 +1,5 @@
 locals { env = var.is_prod_branch == true ? ["prod"] : ["dev"] }
 
-provider "aws" {
-  region = var.aws_region
-}
-
 module "vpc" {
   source = "./modules/vpc"
   # Environment-specific variables
