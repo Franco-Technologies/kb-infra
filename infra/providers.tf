@@ -9,6 +9,11 @@ terraform {
 }
 
 provider "aws" {
+  region = var.region
+  alias  = "default"
+}
+
+provider "aws" {
 
   region = var.region
   assume_role {

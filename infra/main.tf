@@ -58,6 +58,9 @@ module "api_gateway" {
 }
 
 module "ssm" {
+  providers = {
+    aws = aws.default
+  }
   depends_on = [
     module.vpc,
     module.ecs,
