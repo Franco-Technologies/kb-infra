@@ -58,7 +58,15 @@ module "api_gateway" {
 }
 
 module "ssm" {
+  depends_on = [
+    module.vpc,
+    module.ecs,
+    module.load_balancer,
+    # module.rds,
+    module.api_gateway
+  ]
   source = "./modules/ssm"
+
   # Environment-specific variables
   param_name = "/${local.env}/${var.app_name}"
   outputs = {
