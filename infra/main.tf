@@ -14,6 +14,19 @@ module "ecs" {
   env    = var.env
 }
 
+module "load_balancer" {
+  source = "./modules/load_balancer"
+  # Environment-specific variables
+  env               = var.env
+  subnet_ids        = module.vpc.private_subnet_ids
+  vpc_id            = module.vpc.vpc_id
+  security_group_id = module.vpc.default_security_group_id
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
+}
+
 module "rds" {
   source = "./modules/rds"
   # Environment-specific variables
