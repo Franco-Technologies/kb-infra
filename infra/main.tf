@@ -11,7 +11,7 @@ module "ecs" {
   source = "./modules/ecs"
   # Environment-specific variables
   vpc_id = module.vpc.vpc_id
-  env    = local.env
+  env    = var.env
 }
 
 # module "rds" {
