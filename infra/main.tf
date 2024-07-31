@@ -28,7 +28,7 @@ module "rds" {
 module "api_gateway" {
   source = "./modules/api_gateway"
   # Environment-specific variables
-  name               = "${local.env}-tenant-management-api"
+  name               = "${var.env}-tenant-management-api"
   description        = "API Gateway for tenant management"
   endpoint_types     = ["REGIONAL"]
   authorization      = "NONE"
