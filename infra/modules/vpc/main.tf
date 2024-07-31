@@ -20,3 +20,11 @@ resource "aws_subnet" "private" {
   }
 }
 
+# internet gateway for the VPC
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "${var.env}-tenant-management-igw"
+  }
+}

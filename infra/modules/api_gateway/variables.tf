@@ -42,7 +42,7 @@ variable "tags" {
 variable "root_path_part" {
   description = "The root path part for the API Gateway"
   type        = string
-  default     = "/"
+  default     = "api"
 }
 
 variable "vpc_link_name" {
