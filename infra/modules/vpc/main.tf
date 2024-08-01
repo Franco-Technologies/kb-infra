@@ -93,9 +93,14 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
-resource "aws_vpc_endpoint" "ecr" {
+resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-2.ecr"
+  service_name = "com.amazonaws.us-east-2.ecr.dkr"
+}
+
+resource "aws_vpc_endpoint" "ecr_api" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-2.ecr.api"
 }
 
 resource "aws_vpc_endpoint" "s3" {
