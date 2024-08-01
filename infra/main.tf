@@ -86,8 +86,8 @@ module "ssm" {
     ecr_repository_url        = module.ecr.ecr_repository_url
     ecs_cluster_arn           = module.ecs.cluster_arn
     load_balancer_dns_name    = module.load_balancer.load_balancer_dns_name
-    # listener_arn              = module.load_balancer.listener_arn
-    load_balancer_arn = module.load_balancer.load_balancer_arn
+    listener_arn              = module.load_balancer.listener_arn
+    load_balancer_arn         = module.load_balancer.load_balancer_arn
     # rds_endpoint = module.rds.db_endpoint
     api_gateway_rest_api_id      = module.api_gateway.rest_api_id
     api_gateway_root_resource_id = module.api_gateway.root_resource_id

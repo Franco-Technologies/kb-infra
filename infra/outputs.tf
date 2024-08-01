@@ -26,9 +26,9 @@ output "load_balancer_dns_name" {
   value = module.load_balancer.load_balancer_dns_name
 }
 
-# output "listener_arn" {
-#   value = module.load_balancer.listener_arn
-# }
+output "listener_arn" {
+  value = module.load_balancer.listener_arn
+}
 
 output "load_balancer_arn" {
   value = module.load_balancer.load_balancer_arn
