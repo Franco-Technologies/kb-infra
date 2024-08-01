@@ -25,7 +25,7 @@ module "load_balancer" {
   source = "./modules/load_balancer"
   # Environment-specific variables
   env               = local.env
-  subnet_ids        = module.vpc.private_subnet_ids
+  subnet_ids        = module.vpc.public_subnet_ids
   vpc_id            = module.vpc.vpc_id
   security_group_id = module.vpc.default_security_group_id
   tags = {
@@ -78,6 +78,7 @@ module "ssm" {
   param_name = "/${var.app_name}/${local.env}/appvars"
   outputs = {
     vpc_id                      = module.vpc.vpc_id
+    public_subnet_ids           = jsonencode(module.vpc.public_subnet_ids)
     private_subnet_ids          = jsonencode(module.vpc.private_subnet_ids)
     default_security_group_id   = module.vpc.default_security_group_id
     ecr_repository_url          = module.ecr.ecr_repository_url
