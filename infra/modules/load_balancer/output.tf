@@ -15,5 +15,5 @@ output "target_group_arn" {
 }
 
 output "security_group_id" {
-  value = aws_security_group.default.id
+  value = aws_security_group.lb_sg.id
 }

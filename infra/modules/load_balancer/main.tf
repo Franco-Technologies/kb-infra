@@ -3,7 +3,7 @@ resource "aws_lb" "main" {
   name               = "${var.env}-load-balancer"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.default.id]
+  security_groups    = [aws_security_group.lb_sg.id]
   subnets            = var.subnet_ids
   tags               = var.tags
 }
