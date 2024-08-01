@@ -9,8 +9,9 @@ resource "aws_lb" "main" {
 }
 
 # Security group resource
-resource "aws_security_group" "default" {
+resource "aws_security_group" "lb_sg" {
   vpc_id = var.vpc_id
+  name   = "${var.env}-lb-sg"
 
   egress {
     from_port   = 0
