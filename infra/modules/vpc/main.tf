@@ -57,6 +57,15 @@ resource "aws_route_table" "public" {
 
 }
 
+# route table for the private subnets
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "private-route-table"
+  }
+}
+
 # associate the public subnets with the route table
 resource "aws_route_table_association" "public" {
   count          = 2
@@ -74,7 +83,7 @@ resource "aws_route_table_association" "private" {
 resource "aws_vpc_endpoint" "gateway_endpoint" {
   vpc_id          = aws_vpc.main.id
   service_name    = "com.amazonaws.ap-south-1.s3"
-  route_table_ids = [aws_route_table.RT_PRIVATE.id]
+  route_table_ids = [aws_route_table.private.id]
   tags = {
     "Name" = "GATEAGY_INTERFAC"
   }
