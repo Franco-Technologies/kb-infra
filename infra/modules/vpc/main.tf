@@ -82,7 +82,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_vpc_endpoint" "gateway_endpoint" {
   vpc_id          = aws_vpc.main.id
-  service_name    = "com.amazonaws.ap-south-1.s3"
+  service_name    = "com.amazonaws.us-east-2.s3"
   route_table_ids = [aws_route_table.private.id]
   tags = {
     "Name" = "GATEAGY_INTERFAC"
@@ -90,25 +90,25 @@ resource "aws_vpc_endpoint" "gateway_endpoint" {
 }
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-1.ecr.dkr"
+  service_name = "com.amazonaws.us-east-2.ecr.dkr"
 }
 
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-1.ecr.api"
+  service_name = "com.amazonaws.us-east-2.ecr.api"
 }
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-1.s3"
+  service_name = "com.amazonaws.us-east-2.s3"
 }
 
 resource "aws_vpc_endpoint" "logs" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-1.logs"
+  service_name = "com.amazonaws.us-east-2.logs"
 }
 
 resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.us-east-1.monitoring"
+  service_name = "com.amazonaws.us-east-2.monitoring"
 }
