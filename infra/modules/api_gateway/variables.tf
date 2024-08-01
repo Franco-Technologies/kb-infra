@@ -45,18 +45,3 @@ variable "root_path_part" {
   default     = "api"
 }
 
-variable "vpc_link_name" {
-  description = "The name of the VPC Link"
-  type        = string
-  default     = "ecs-vpc-link"
-}
-
-# variable "target_arns" {
-#   description = "The ARNs of the targets for the VPC Link"
-#   type        = list(string)
-# }
-
-# variable "ecs_service_url" {
-#   description = "The URL of the ECS service"
-#   type        = string
-# }
