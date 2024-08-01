@@ -57,3 +57,7 @@ output "api_gateway_rest_api_id" {
 output "api_gateway_root_resource_id" {
   value = module.api_gateway.root_resource_id
 }
+
+output "api_gateway_url" {
+  value = module.api_gateway.api_gateway_url
+}

@@ -23,3 +23,23 @@ resource "aws_api_gateway_method" "root_method" {
 
   request_parameters = var.request_parameters
 }
+
+resource "aws_api_gateway_integration" "proxy" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.root.id
+  http_method = aws_api_gateway_method.root_method.http_method
+
+  type                    = "HTTP_PROXY"
+  integration_http_method = "ANY"
+  uri                     = "http://${var.alb_dns_name}/{proxy}"
+  request_parameters = {
+    "integration.request.path.proxy" = "method.request.path.proxy"
+  }
+}
+
+resource "aws_api_gateway_deployment" "main" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  stage_name  = var.stage_name
+
+  depends_on = [aws_api_gateway_integration.proxy]
+}
