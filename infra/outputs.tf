@@ -11,10 +11,6 @@ output "private_subnet_ids" {
   value = module.vpc.private_subnet_ids
 }
 
-output "default_security_group_id" {
-  value = module.vpc.default_security_group_id
-}
-
 # ECR
 output "ecr_repository_url" {
   value = module.ecr.ecr_repository_url
@@ -46,7 +42,7 @@ output "target_group_arn" {
   value = module.load_balancer.target_group_arn
 }
 
-output "security_group_id" {
+output "lb_security_group_id" {
   value = module.load_balancer.security_group_id
 }
 

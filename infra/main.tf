@@ -79,7 +79,6 @@ module "ssm" {
     vpc_id                      = module.vpc.vpc_id
     public_subnet_ids           = jsonencode(module.vpc.public_subnet_ids)
     private_subnet_ids          = jsonencode(module.vpc.private_subnet_ids)
-    default_security_group_id   = module.vpc.default_security_group_id
     ecr_repository_url          = module.ecr.ecr_repository_url
     ecs_cluster_arn             = module.ecs.cluster_arn
     ecs_task_execution_role_arn = module.ecs.role_arn

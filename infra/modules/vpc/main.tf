@@ -34,26 +34,6 @@ resource "aws_subnet" "private" {
 }
 
 
-# create a default security group for the VPC
-resource "aws_security_group" "default" {
-  vpc_id = aws_vpc.main.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # accept 443 from private subnets only
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = aws_subnet.private[*].cidr_block
-  }
-}
-
 # internet gateway for the VPC
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -94,6 +74,27 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+# create security group for the VPC endpoints
+resource "aws_security_group" "vpc_endpoints" {
+  vpc_id = aws_vpc.main.id
+  name   = "${var.env}-vpc-endpoints-sg"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # accept 443 from private subnets only
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = aws_subnet.private[*].cidr_block
+  }
+}
+
 # associate the private subnets with the route table
 resource "aws_route_table_association" "private" {
   count          = 2
@@ -105,7 +106,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.us-east-2.ecr.dkr"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.default.id]
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
   subnet_ids          = aws_subnet.private[*].id
 }
@@ -114,7 +115,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.us-east-2.ecr.api"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.default.id]
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
   subnet_ids          = aws_subnet.private[*].id
 }
@@ -129,7 +130,7 @@ resource "aws_vpc_endpoint" "logs" {
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.us-east-2.logs"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.default.id]
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
   private_dns_enabled = true
   subnet_ids          = aws_subnet.private[*].id
 }
