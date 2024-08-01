@@ -54,7 +54,7 @@ module "api_gateway" {
   authorization      = "NONE"
   request_parameters = {}
   stage_name         = local.env
-  root_path_part     = "api"
+  root_path_part     = "/{proxy+}"
   vpc_link_name      = "ecs-vpc-link"
   # target_arns        = [module.ecs.service_arn]
   # ecs_service_url    = module.ecs.service_url
