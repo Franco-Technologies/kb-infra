@@ -14,24 +14,23 @@ module "ecr" {
   env      = local.env
 }
 
+module "load_balancer" {
+  source = "./modules/load_balancer"
+  # Environment-specific variables
+  env        = local.env
+  subnet_ids = module.vpc.public_subnet_ids
+  vpc_id     = module.vpc.vpc_id
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
+}
+
 module "ecs" {
   source = "./modules/ecs"
   # Environment-specific variables
   vpc_id = module.vpc.vpc_id
   env    = local.env
-}
-
-module "load_balancer" {
-  source = "./modules/load_balancer"
-  # Environment-specific variables
-  env               = local.env
-  subnet_ids        = module.vpc.public_subnet_ids
-  vpc_id            = module.vpc.vpc_id
-  security_group_id = module.vpc.default_security_group_id
-  tags = {
-    Environment = "dev"
-    Project     = "example"
-  }
 }
 
 # module "rds" {
@@ -85,6 +84,7 @@ module "ssm" {
     ecs_cluster_arn             = module.ecs.cluster_arn
     ecs_task_execution_role_arn = module.ecs.role_arn
     load_balancer_dns_name      = module.load_balancer.load_balancer_dns_name
+    load_balancer_sg_id         = module.load_balancer.security_group_id
     listener_arn                = module.load_balancer.listener_arn
     load_balancer_arn           = module.load_balancer.load_balancer_arn
     # rds_endpoint = module.rds.db_endpoint

@@ -3,9 +3,36 @@ resource "aws_lb" "main" {
   name               = "${var.env}-load-balancer"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [var.security_group_id]
+  security_groups    = [aws_security_group.default.id]
   subnets            = var.subnet_ids
   tags               = var.tags
+}
+
+# Security group resource
+resource "aws_security_group" "default" {
+  vpc_id = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
+  }
+
+  ingress {
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+  }
+
+  tags = var.tags
+
 }
 
 # listener resource

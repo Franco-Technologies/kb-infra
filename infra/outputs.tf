@@ -42,6 +42,14 @@ output "load_balancer_arn" {
   value = module.load_balancer.load_balancer_arn
 }
 
+output "target_group_arn" {
+  value = module.load_balancer.target_group_arn
+}
+
+output "security_group_id" {
+  value = module.load_balancer.security_group_id
+}
+
 # output "rds_endpoint" {
 #   value = module.rds.db_endpoint
 # }
