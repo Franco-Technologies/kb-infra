@@ -33,18 +33,6 @@ resource "aws_subnet" "private" {
   }
 }
 
-# create a default security group for the VPC
-resource "aws_security_group" "default" {
-  vpc_id = aws_vpc.main.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 # internet gateway for the VPC
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -74,4 +62,44 @@ resource "aws_route_table_association" "public" {
   count          = 2
   subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = aws_route_table.public.id
+}
+
+# associate the private subnets with the route table
+resource "aws_route_table_association" "private" {
+  count          = 2
+  subnet_id      = element(aws_subnet.private[*].id, count.index)
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_vpc_endpoint" "gateway_endpoint" {
+  vpc_id          = aws_vpc.main.id
+  service_name    = "com.amazonaws.ap-south-1.s3"
+  route_table_ids = [aws_route_table.RT_PRIVATE.id]
+  tags = {
+    "Name" = "GATEAGY_INTERFAC"
+  }
+}
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-1.ecr.dkr"
+}
+
+resource "aws_vpc_endpoint" "ecr_api" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-1.ecr.api"
+}
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-1.s3"
+}
+
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-1.logs"
+}
+
+resource "aws_vpc_endpoint" "cloudwatch" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-east-1.monitoring"
 }
