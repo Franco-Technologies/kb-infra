@@ -32,6 +32,18 @@ resource "aws_subnet" "private" {
   }
 }
 
+# create a default security group for the VPC
+resource "aws_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # internet gateway for the VPC
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
