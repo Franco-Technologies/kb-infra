@@ -45,12 +45,12 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # accept 443 from private subnets
+  # accept 443 from private subnets only
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [cidrsubnet(aws_vpc.main.cidr_block, 4, 0), cidrsubnet(aws_vpc.main.cidr_block, 4, 1)]
+    cidr_blocks = aws_subnet.private[*].cidr_block
   }
 }
 
