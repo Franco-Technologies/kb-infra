@@ -11,7 +11,7 @@ output "load_balancer_dns_name" {
 }
 
 output "listener_arn" {
-  value = aws_lb_listener.main.arn
+  value = aws_lb_listener.alb.arn
 
 }
 output "load_balancer_arn" {
