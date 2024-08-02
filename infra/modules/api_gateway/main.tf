@@ -33,7 +33,7 @@ resource "aws_api_gateway_integration" "proxy" {
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri                     = "http://${aws_lb.app.dns_name}/{proxy}"
+  uri                     = "http://${var.alb_dns_name}/{proxy}"
 
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"
