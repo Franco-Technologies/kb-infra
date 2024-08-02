@@ -17,9 +17,10 @@ module "ecr" {
 module "load_balancer" {
   source = "./modules/load_balancer"
   # Environment-specific variables
-  env        = local.env
-  subnet_ids = module.vpc.public_subnet_ids
-  vpc_id     = module.vpc.vpc_id
+  env            = local.env
+  subnet_ids     = module.vpc.public_subnet_ids
+  vpc_id         = module.vpc.vpc_id
+  vpc_link_sg_id = module.vpc.vpc_link_sg_id
   tags = {
     Environment = "dev"
     Project     = "example"
@@ -56,6 +57,7 @@ module "api_gateway" {
   root_path_part     = "{proxy+}"
   alb_dns_name       = module.load_balancer.load_balancer_dns_name
   load_balancer_arn  = module.load_balancer.load_balancer_arn
+  vpc_link_id        = module.vpc.vpc_link_id
   tags = {
     Environment = "dev"
     Project     = "example"

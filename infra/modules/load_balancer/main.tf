@@ -1,12 +1,13 @@
 # load balancer resource
 resource "aws_lb" "main" {
   name               = "${var.env}-load-balancer"
-  internal           = false
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
   subnets            = var.subnet_ids
   tags               = var.tags
 }
+
 
 # Security group resource
 resource "aws_security_group" "lb_sg" {
@@ -21,10 +22,10 @@ resource "aws_security_group" "lb_sg" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [var.vpc_link_sg_id]
   }
 
   ingress {

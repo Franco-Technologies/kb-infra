@@ -54,3 +54,8 @@ variable "load_balancer_arn" {
   description = "The ARN of the Application Load Balancer"
   type        = string
 }
+
+variable "vpc_link_id" {
+  description = "The ID of the VPC Link"
+  type        = string
+}

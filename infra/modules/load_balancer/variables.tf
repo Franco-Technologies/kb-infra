@@ -19,3 +19,7 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_link_sg_id" {
+  description = "VPC Link security group ID"
+  type        = string
+}

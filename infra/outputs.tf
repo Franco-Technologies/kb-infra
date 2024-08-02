@@ -11,6 +11,18 @@ output "private_subnet_ids" {
   value = module.vpc.private_subnet_ids
 }
 
+output "vpc_endpoints" {
+  value = module.vpc.vpc_endpoints
+}
+
+output "vpc_link_id" {
+  value = module.vpc.vpc_link_id
+}
+
+output "vpc_link_sg_id" {
+  value = module.vpc.vpc_link_sg_id
+}
+
 # ECR
 output "ecr_repository_url" {
   value = module.ecr.ecr_repository_url

@@ -26,11 +26,7 @@ resource "aws_api_gateway_method" "root_method" {
   }
 }
 
-resource "aws_api_gateway_vpc_link" "this" {
-  name        = "ecs-vpc-link"
-  description = "VPC Link for ECS ALB"
-  target_arns = [var.load_balancer_arn]
-}
+
 
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -41,7 +37,7 @@ resource "aws_api_gateway_integration" "proxy" {
   integration_http_method = "ANY"
   uri                     = "${var.alb_dns_name}/{proxy}"
   connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.this.id
+  connection_id           = var.vpc_link_id
   timeout_milliseconds    = 29000
 
   request_parameters = {
