@@ -55,6 +55,7 @@ module "api_gateway" {
   stage_name         = local.env
   root_path_part     = "{proxy+}"
   alb_dns_name       = module.load_balancer.load_balancer_dns_name
+  load_balancer_arn  = module.load_balancer.load_balancer_arn
   tags = {
     Environment = "dev"
     Project     = "example"

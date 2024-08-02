@@ -49,3 +49,8 @@ variable "alb_dns_name" {
   description = "The DNS name of the Application Load Balancer"
   type        = string
 }
+
+variable "load_balancer_arn" {
+  description = "The ARN of the Application Load Balancer"
+  type        = string
+}
