@@ -1,45 +1,3 @@
-# Network Load Balancer
-resource "aws_lb" "nlb" {
-  name               = "ecs-nlb"
-  internal           = false
-  load_balancer_type = "network"
-  subnets            = var.subnet_ids
-  security_groups    = [aws_security_group.lb_sg.id]
-
-  enable_deletion_protection = false
-
-  tags = {
-    Name = "ecs-nlb"
-  }
-}
-
-# NLB Listener
-resource "aws_lb_listener" "nlb" {
-  load_balancer_arn = aws_lb.nlb.arn
-  port              = 80
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.nlb.arn
-  }
-}
-
-# NLB Target Group (pointing to ALB)
-resource "aws_lb_target_group" "nlb" {
-  name        = "ecs-nlb-tg"
-  port        = 80
-  protocol    = "TCP"
-  vpc_id      = var.vpc_id
-  target_type = "alb"
-
-  health_check {
-    protocol = "HTTP"
-    path     = "/"
-    port     = "traffic-port"
-  }
-}
-
 # Application Load Balancer
 resource "aws_lb" "alb" {
   name               = "ecs-alb"
@@ -82,17 +40,6 @@ resource "aws_lb_listener" "alb" {
   }
 }
 
-# app load balancer resource
-resource "aws_lb" "main" {
-  name               = "${var.env}-load-balancer"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = var.subnet_ids
-  tags               = var.tags
-}
-
-
 # Security group resource
 resource "aws_security_group" "lb_sg" {
   vpc_id = var.vpc_id
@@ -124,7 +71,7 @@ resource "aws_security_group" "lb_sg" {
 
 # listener resource
 resource "aws_lb_listener" "main" {
-  load_balancer_arn = aws_lb.main.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -142,6 +89,49 @@ resource "aws_lb_target_group" "main" {
   vpc_id      = var.vpc_id
   target_type = "ip"
 }
+
+# Network Load Balancer
+resource "aws_lb" "nlb" {
+  name               = "ecs-nlb"
+  internal           = false
+  load_balancer_type = "network"
+  subnets            = var.subnet_ids
+  security_groups    = [aws_security_group.lb_sg.id]
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "ecs-nlb"
+  }
+}
+
+# NLB Listener
+resource "aws_lb_listener" "nlb" {
+  load_balancer_arn = aws_lb.nlb.arn
+  port              = 80
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nlb.arn
+  }
+}
+
+# NLB Target Group (pointing to ALB)
+resource "aws_lb_target_group" "nlb" {
+  name        = "ecs-nlb-tg"
+  port        = 80
+  protocol    = "TCP"
+  vpc_id      = var.vpc_id
+  target_type = "alb"
+
+  health_check {
+    protocol = "HTTP"
+    path     = "/"
+    port     = "traffic-port"
+  }
+}
+
 
 # Attach ALB to NLB Target Group
 resource "aws_lb_target_group_attachment" "nlb_to_alb" {
