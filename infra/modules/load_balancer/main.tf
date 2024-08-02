@@ -106,14 +106,7 @@ resource "aws_lb_target_group" "nlb" {
   protocol    = "TCP"
   vpc_id      = var.vpc_id
   target_type = "alb"
-
-  health_check {
-    protocol = "HTTP"
-    path     = "/"
-    port     = "traffic-port"
-  }
 }
-
 
 # Attach ALB to NLB Target Group
 resource "aws_lb_target_group_attachment" "nlb_to_alb" {
