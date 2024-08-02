@@ -9,5 +9,5 @@ output "root_resource_id" {
 }
 
 output "api_gateway_url" {
-  value = aws_api_gateway_deployment.main.invoke_url
+  value = aws_api_gateway_deployment.this.invoke_url
 }
