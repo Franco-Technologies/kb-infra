@@ -15,7 +15,7 @@ resource "aws_api_gateway_resource" "root" {
   path_part   = var.root_path_part
 }
 
-resource "aws_api_gateway_method" "proxy" {
+resource "aws_api_gateway_method" "root_method" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.root.id
   http_method   = "ANY"
@@ -29,7 +29,7 @@ resource "aws_api_gateway_method" "proxy" {
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_resource.root.id
-  http_method = aws_api_gateway_method.proxy.http_method
+  http_method = aws_api_gateway_method.root_method.http_method
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
