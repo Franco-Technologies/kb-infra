@@ -13,15 +13,6 @@ resource "aws_lb" "alb" {
   }
 }
 
-# ALB Target Group
-resource "aws_lb_target_group" "alb" {
-  name        = "ecs-alb-tg"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
-}
-
 # ALB Listener
 resource "aws_lb_listener" "alb" {
   load_balancer_arn = aws_lb.alb.arn
@@ -29,8 +20,12 @@ resource "aws_lb_listener" "alb" {
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.alb.arn
+    type = "static"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Hello, World. This is a static response."
+      status_code  = "200"
+    }
   }
 }
 
