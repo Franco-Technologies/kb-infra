@@ -1,7 +1,7 @@
 # Application Load Balancer
 resource "aws_lb" "alb" {
   name               = "ecs-alb"
-  internal           = false
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
   subnets            = var.subnet_ids
@@ -103,7 +103,7 @@ resource "aws_lb_listener" "nlb" {
 resource "aws_lb_target_group" "nlb" {
   name        = "ecs-nlb-tg"
   port        = 80
-  protocol    = "HTTP"
+  protocol    = "TCP"
   vpc_id      = var.vpc_id
   target_type = "alb"
 }
