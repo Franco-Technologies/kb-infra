@@ -51,6 +51,51 @@ resource "aws_api_gateway_integration" "proxy" {
 }
 
 # logging
+resource "aws_api_gateway_account" "demo" {
+  cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["apigateway.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "cloudwatch" {
+  name               = "api_gateway_cloudwatch_global"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+data "aws_iam_policy_document" "cloudwatch" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents",
+    ]
+
+    resources = ["*"]
+  }
+}
+resource "aws_iam_role_policy" "cloudwatch" {
+  name   = "default"
+  role   = aws_iam_role.cloudwatch.id
+  policy = data.aws_iam_policy_document.cloudwatch.json
+}
+
 resource "aws_cloudwatch_log_group" "api_gw_log_group" {
   name              = "/aws/api-gateway/${var.name}"
   retention_in_days = 14
@@ -72,6 +117,7 @@ resource "aws_api_gateway_stage" "this" {
   stage_name    = var.stage_name
   rest_api_id   = aws_api_gateway_rest_api.this.id
   deployment_id = aws_api_gateway_deployment.this.id
+
 
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw_log_group.arn
