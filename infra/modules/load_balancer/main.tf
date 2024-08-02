@@ -20,7 +20,7 @@ resource "aws_lb_listener" "alb" {
   protocol          = "HTTP"
 
   default_action {
-    type = "static"
+    type = "fixed-response"
     fixed_response {
       content_type = "text/plain"
       message_body = "Hello, World. This is a static response."
