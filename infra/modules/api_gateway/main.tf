@@ -48,12 +48,48 @@ resource "aws_api_gateway_integration" "proxy" {
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"
   }
-
 }
 
-resource "aws_api_gateway_deployment" "main" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = var.stage_name
+# logging
+resource "aws_cloudwatch_log_group" "api_gw_log_group" {
+  name              = "/aws/api-gateway/${var.name}"
+  retention_in_days = 14
+}
 
-  depends_on = [aws_api_gateway_integration.proxy]
+
+# deployment
+resource "aws_api_gateway_deployment" "this" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  triggers = {
+    redeployment = sha1(jsonencode({
+      stage_name = var.stage_name,
+    }))
+  }
+}
+
+# stage
+resource "aws_api_gateway_stage" "this" {
+  stage_name    = var.stage_name
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  deployment_id = aws_api_gateway_deployment.this.id
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gw_log_group.arn
+    format = jsonencode({
+      requestId          = "$context.requestId",
+      ip                 = "$context.identity.sourceIp",
+      caller             = "$context.identity.caller",
+      user               = "$context.identity.user",
+      requestTime        = "$context.requestTime",
+      httpMethod         = "$context.httpMethod",
+      resourcePath       = "$context.resourcePath",
+      status             = "$context.status",
+      protocol           = "$context.protocol",
+      responseLength     = "$context.responseLength",
+      integrationLatency = "$context.integration.latency",
+    })
+  }
+
+
+  tags = var.tags
 }
