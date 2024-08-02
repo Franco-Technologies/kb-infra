@@ -39,7 +39,7 @@ resource "aws_api_gateway_integration" "proxy" {
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri                     = "http://${var.alb_dns_name}/{proxy}"
+  uri                     = "${var.alb_dns_name}/{proxy}"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.this.id
   timeout_milliseconds    = 29000
