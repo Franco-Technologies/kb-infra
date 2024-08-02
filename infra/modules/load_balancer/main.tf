@@ -103,7 +103,7 @@ resource "aws_lb_listener" "nlb" {
 resource "aws_lb_target_group" "nlb" {
   name        = "ecs-nlb-tg"
   port        = 80
-  protocol    = "TCP"
+  protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "alb"
 }
