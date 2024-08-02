@@ -20,10 +20,6 @@ output "vpc_endpoints" {
   }
 }
 
-output "vpc_link_id" {
-  value = aws_apigatewayv2_vpc_link.this.id
-}
-
 output "vpc_link_sg_id" {
   value = aws_security_group.vpc_link.id
 }

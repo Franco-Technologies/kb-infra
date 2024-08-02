@@ -54,8 +54,3 @@ variable "nlb_arn" {
   description = "The ARN of the Network Load Balancer"
   type        = string
 }
-
-variable "vpc_link_id" {
-  description = "The ID of the VPC Link"
-  type        = string
-}

@@ -57,7 +57,6 @@ module "api_gateway" {
   root_path_part     = "{proxy+}"
   nlb_dns_name       = module.load_balancer.nlb_dns_name
   nlb_arn            = module.load_balancer.nlb_arn
-  vpc_link_id        = module.vpc.vpc_link_id
   tags = {
     Environment = "dev"
     Project     = "example"
