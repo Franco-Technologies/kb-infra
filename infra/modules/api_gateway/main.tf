@@ -2,9 +2,9 @@ resource "aws_api_gateway_rest_api" "this" {
   name        = var.name
   description = var.description
 
-  endpoint_configuration {
-    types = var.endpoint_types
-  }
+  # endpoint_configuration {
+  #   types = var.endpoint_types
+  # }
 
   tags = var.tags
 }
