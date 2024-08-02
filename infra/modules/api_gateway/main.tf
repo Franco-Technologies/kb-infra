@@ -128,11 +128,17 @@ resource "aws_api_gateway_stage" "this" {
       user               = "$context.identity.user",
       requestTime        = "$context.requestTime",
       httpMethod         = "$context.httpMethod",
+      path               = "$context.path",
       resourcePath       = "$context.resourcePath",
       status             = "$context.status",
       protocol           = "$context.protocol",
       responseLength     = "$context.responseLength",
       integrationLatency = "$context.integration.latency",
+      errorMessage       = "$context.error.message",
+      errorType          = "$context.error.type",
+      responseBody       = "$context.response.body",
+      integrationStatus  = "$context.integration.status",
+      integrationError   = "$context.integration.error"
     })
   }
 
