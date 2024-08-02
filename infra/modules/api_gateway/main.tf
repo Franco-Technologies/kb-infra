@@ -26,7 +26,12 @@ resource "aws_api_gateway_method" "root_method" {
   }
 }
 
-
+resource "aws_api_gateway_vpc_link" "this" {
+  name        = "vpc-link"
+  description = "VPC Link for API Gateway"
+  target_arns = [var.nlb_arn]
+  tags        = var.tags
+}
 
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -35,9 +40,9 @@ resource "aws_api_gateway_integration" "proxy" {
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri                     = "${var.alb_dns_name}/{proxy}"
+  uri                     = "${var.nlb_dns_name}/{proxy}"
   connection_type         = "VPC_LINK"
-  connection_id           = var.vpc_link_id
+  connection_id           = aws_api_gateway_vpc_link.this.id
   timeout_milliseconds    = 29000
 
   request_parameters = {

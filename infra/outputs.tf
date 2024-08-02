@@ -38,6 +38,14 @@ output "ecs_task_execution_role_arn" {
 }
 
 # Load Balancer
+output "nlb_dns_name" {
+  value = module.load_balancer.load_balancer_dns_name
+}
+
+output "nlb_arn" {
+  value = module.load_balancer.load_balancer_arn
+}
+
 output "load_balancer_dns_name" {
   value = module.load_balancer.load_balancer_dns_name
 }
