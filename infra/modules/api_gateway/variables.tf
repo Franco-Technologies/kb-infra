@@ -3,6 +3,12 @@ variable "name" {
   type        = string
 }
 
+variable "aws_region" {
+  description = "The region in which the API Gateway is created"
+  type        = string
+  default     = "us-east-2"
+}
+
 variable "description" {
   description = "The description of the API Gateway"
   type        = string
