@@ -4,7 +4,7 @@
 resource "aws_lambda_layer_version" "this" {
   layer_name       = var.layer_name
   filename         = var.layer_filename
-  source_code_hash = data.archive_file.layer.output_base64sha256
+  source_code_hash = filebase64sha256(var.layer_filename)
 
   compatible_runtimes = var.compatible_runtimes
 }
