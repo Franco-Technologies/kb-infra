@@ -67,7 +67,7 @@ module "api_gateway" {
   root_path_part       = "{proxy+}"
   nlb_dns_name         = module.load_balancer.nlb_dns_name
   nlb_arn              = module.load_balancer.nlb_arn
-  authorizer_uri       = module.lambda.authorizer_uri
+  authorizer_uri       = module.lambda.qualified_invoke_arn
   lambda_function_name = module.lambda.function_name
   tags = {
     Environment = "dev"
