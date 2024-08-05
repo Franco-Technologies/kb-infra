@@ -42,6 +42,7 @@ resource "aws_lambda_function" "authorizer" {
   runtime          = var.runtime
   timeout          = var.timeout
   memory_size      = var.memory_size
+  layers           = [aws_lambda_layer_version.this.arn]
   source_code_hash = data.archive_file.authorizer.output_base64sha256
   tags             = var.tags
 }
