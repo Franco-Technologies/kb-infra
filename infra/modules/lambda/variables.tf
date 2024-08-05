@@ -19,7 +19,7 @@ variable "runtime" {
 variable "timeout" {
   description = "The amount of time that Lambda allows a function to run before stopping it"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "memory_size" {

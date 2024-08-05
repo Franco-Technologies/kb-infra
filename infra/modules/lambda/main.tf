@@ -33,6 +33,11 @@ resource "aws_iam_role" "authorizer" {
     ]
   })
 }
+resource "aws_iam_policy_attachment" "authorizer" {
+  name       = "authorizer-policy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  roles      = [aws_iam_role.authorizer.name]
+}
 
 resource "aws_lambda_function" "authorizer" {
   filename         = data.archive_file.authorizer.output_path
