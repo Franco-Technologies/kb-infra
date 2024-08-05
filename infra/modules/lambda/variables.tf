@@ -60,7 +60,7 @@ variable "layer_name" {
 variable "layer_filename" {
   description = "The path to the file containing the layer code"
   type        = string
-  default     = "./modules/lambda/lambda_layer/layer.zip"
+  default     = "./modules/lambda/lambda_layer/layer_2.zip"
 }
 
 variable "compatible_runtimes" {
