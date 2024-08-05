@@ -7,10 +7,11 @@ resource "aws_api_gateway_rest_api" "this" {
 
 # Authorizer
 resource "aws_api_gateway_authorizer" "this" {
-  name            = "api_gateway_authorizer"
-  rest_api_id     = aws_api_gateway_rest_api.this.id
-  type            = "TOKEN"
-  authorizer_uri  = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${var.authorizer_uri}/invocations"
+  name           = "api_gateway_authorizer"
+  rest_api_id    = aws_api_gateway_rest_api.this.id
+  type           = "TOKEN"
+  authorizer_uri = var.authorizer_uri
+
   identity_source = "method.request.header.Authorization"
 }
 
