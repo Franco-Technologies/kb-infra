@@ -30,7 +30,7 @@ variable "memory_size" {
 
 variable "environment" {
   description = "The Lambda function environment's configuration settings"
-  type        = map(string)
+  type        = string
 }
 
 variable "tags" {
