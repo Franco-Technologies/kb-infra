@@ -24,5 +24,16 @@ variable "db_password" {
   type        = string
   default     = "admin123"
 }
+variable "dev_trusted_issuers" {
+  description = "Trusted issuers for the dev environment"
+  type        = string
+  default     = "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_vXgSMyGNJ"
+}
+
+variable "prod_trusted_issuers" {
+  description = "Trusted issuers for the prod environment"
+  type        = string
+  default     = ""
+}
 
 # Add other environment-specific variables as needed

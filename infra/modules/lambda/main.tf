@@ -50,4 +50,10 @@ resource "aws_lambda_function" "authorizer" {
   layers           = [aws_lambda_layer_version.this.arn]
   source_code_hash = data.archive_file.authorizer.output_base64sha256
   tags             = var.tags
+  environment {
+    # TRUSTED_ISSUERS for cognito
+    variables = {
+      TRUSTED_ISSUERS = var.trusted_issuers
+    }
+  }
 }

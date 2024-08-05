@@ -1,5 +1,39 @@
 import json
+import os
 import jwt
+import requests
+from jwt.algorithms import RSAAlgorithm
+
+TRUSTED_ISSUERS = os.getenv('TRUSTED_ISSUERS').split(',')
+
+def get_jwks(issuer):
+    jwks_url = f"{issuer}/.well-known/jwks.json"
+    response = requests.get(jwks_url)
+    response.raise_for_status()
+    return response.json()
+
+def validate_jwt_token(token):
+    headers = jwt.get_unverified_header(token)
+    issuer = jwt.decode(token, options={"verify_signature": False})['iss']
+
+    if issuer not in TRUSTED_ISSUERS:
+        print("Issuer not trusted")
+        return None
+
+    jwks = get_jwks(issuer)
+    kid = headers['kid']
+    key = next(item for item in jwks['keys'] if item['kid'] == kid)
+
+    public_key = RSAAlgorithm.from_jwk(json.dumps(key))
+    try:
+        payload = jwt.decode(token, public_key, algorithms=['RS256'], issuer=issuer)
+        return payload
+    except jwt.ExpiredSignatureError:
+        print("Token has expired")
+        return None
+    except jwt.InvalidTokenError:
+        print("Invalid token")
+        return None
 
 def lambda_handler(event, context):
     print("Received event:", json.dumps(event))
@@ -9,11 +43,9 @@ def lambda_handler(event, context):
     method_arn = event['methodArn']
 
     # Decode JWT token
-    try:
-        decoded_token = jwt.decode(token, options={"verify_signature": False})
-        print("Decoded token:", json.dumps(decoded_token))
-    except Exception as e:
-        print(f"Error decoding token: {e}")
+    decoded_token = validate_jwt_token(token)
+    if decoded_token is None:
+        print("Unauthorized: Invalid token or issuer")
         raise Exception('Unauthorized')
 
     cognito_groups = decoded_token.get('cognito:groups', [])
@@ -29,7 +61,7 @@ def lambda_handler(event, context):
     method = api_gateway_arn_tmp[2]
     resource = '/'
 
-    if api_gateway_arn_tmp[3]:
+    if len(api_gateway_arn_tmp) > 3:
         resource += api_gateway_arn_tmp[3]
 
     print("Resource being accessed:", resource)
