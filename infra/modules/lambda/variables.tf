@@ -41,7 +41,7 @@ variable "tags" {
 variable "source_dir" {
   description = "The path to the directory containing the Lambda function source code"
   type        = string
-  default     = "./src"
+  default     = "infra/modules/lambda/src"
 }
 
 variable "output_path" {
