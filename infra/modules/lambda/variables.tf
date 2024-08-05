@@ -69,7 +69,3 @@ variable "compatible_runtimes" {
   default     = ["python3.11"]
 }
 
-variable "trusted_issuers" {
-  description = "The trusted issuers for the authorizer"
-  type        = string
-}

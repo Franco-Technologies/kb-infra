@@ -48,8 +48,7 @@ module "ecs" {
 module "lambda" {
   source = "./modules/lambda"
   # Environment-specific variables
-  environment     = local.env
-  trusted_issuers = var.is_prod_branch == true ? var.prod_trusted_issuers : var.dev_trusted_issuers
+  environment = local.env
   tags = {
     Environment = "dev"
     Project     = "example"

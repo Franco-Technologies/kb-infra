@@ -3,8 +3,43 @@ import os
 import jwt
 import requests
 from jwt.algorithms import RSAAlgorithm
+import boto3
+import time
 
-TRUSTED_ISSUERS = os.getenv('TRUSTED_ISSUERS').split(',')
+# Initialize boto3 client for Cognito Identity Provider
+client = boto3.client('cognito-idp')
+
+# Global variables for caching
+CACHE_TTL = 300  # Cache time-to-live in seconds (e.g., 5 minutes)
+cache = {
+    "user_pools": [],
+    "timestamp": 0
+}
+
+def get_user_pools():
+    current_time = time.time()
+    # Check if cache is still valid
+    if (current_time - cache['timestamp']) < CACHE_TTL and cache['user_pools']:
+        print("Using cached user pools")
+        return cache['user_pools']
+
+    # Fetch user pools from AWS Cognito
+    print("Fetching user pools from Cognito")
+    user_pools = []
+    response = client.list_user_pools(MaxResults=60)
+    user_pools.extend(response['UserPools'])
+    
+    while 'NextToken' in response:
+        response = client.list_user_pools(NextToken=response['NextToken'], MaxResults=60)
+        user_pools.extend(response['UserPools'])
+    
+    user_pool_urls = [f"https://cognito-idp.{pool['Id'].split('_')[0]}.amazonaws.com/{pool['Id']}" for pool in user_pools]
+    
+    # Update cache
+    cache['user_pools'] = user_pool_urls
+    cache['timestamp'] = current_time
+
+    return user_pool_urls
 
 def get_jwks(issuer):
     jwks_url = f"{issuer}/.well-known/jwks.json"
@@ -12,11 +47,11 @@ def get_jwks(issuer):
     response.raise_for_status()
     return response.json()
 
-def validate_jwt_token(token):
+def validate_jwt_token(token, trusted_issuers):
     headers = jwt.get_unverified_header(token)
     issuer = jwt.decode(token, options={"verify_signature": False})['iss']
 
-    if issuer not in TRUSTED_ISSUERS:
+    if issuer not in trusted_issuers:
         print("Issuer not trusted")
         return None
 
@@ -42,8 +77,12 @@ def lambda_handler(event, context):
     token = event['authorizationToken'].split(' ')[1]
     method_arn = event['methodArn']
 
+    # Get all trusted issuers (user pool URLs)
+    trusted_issuers = get_user_pools()
+    print("Trusted issuers:", trusted_issuers)
+
     # Decode JWT token
-    decoded_token = validate_jwt_token(token)
+    decoded_token = validate_jwt_token(token, trusted_issuers)
     if decoded_token is None:
         print("Unauthorized: Invalid token or issuer")
         raise Exception('Unauthorized')

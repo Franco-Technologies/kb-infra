@@ -28,16 +28,32 @@ resource "aws_iam_role" "authorizer" {
           Service = "lambda.amazonaws.com"
         },
         Action = "sts:AssumeRole"
-      },
+      }
 
     ]
   })
+  inline_policy {
+    name = "CognitoPolicy-listpools"
+    policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Action = [
+            "cognito-idp:ListUserPools"
+          ],
+          Resource = "*"
+        }
+      ]
+    })
+  }
 }
 resource "aws_iam_policy_attachment" "authorizer" {
   name       = "authorizer-policy"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   roles      = [aws_iam_role.authorizer.name]
 }
+
 
 resource "aws_lambda_function" "authorizer" {
   filename         = data.archive_file.authorizer.output_path
@@ -50,10 +66,4 @@ resource "aws_lambda_function" "authorizer" {
   layers           = [aws_lambda_layer_version.this.arn]
   source_code_hash = data.archive_file.authorizer.output_base64sha256
   tags             = var.tags
-  environment {
-    # TRUSTED_ISSUERS for cognito
-    variables = {
-      TRUSTED_ISSUERS = var.trusted_issuers
-    }
-  }
 }
