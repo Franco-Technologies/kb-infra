@@ -13,7 +13,7 @@ variable "handler" {
 variable "runtime" {
   description = "The runtime environment for the Lambda function"
   type        = string
-  default     = "python3.8"
+  default     = "python3.11"
 }
 
 variable "timeout" {
@@ -49,3 +49,23 @@ variable "output_path" {
   type        = string
   default     = "./lambda-authorizer.zip"
 }
+
+variable "layer_name" {
+  description = "The name of the layer"
+  type        = string
+  default     = "authorizer-layer"
+
+}
+
+variable "layer_filename" {
+  description = "The path to the file containing the layer code"
+  type        = string
+  default     = "./modules/lambda/lambda_layer/layer.zip"
+}
+
+variable "compatible_runtimes" {
+  description = "A list of runtimes compatible with the layer"
+  type        = list(string)
+  default     = ["python3.11"]
+}
+
