@@ -2,7 +2,7 @@ import json
 import os
 import jwt
 import requests
-from jwt.algorithms import RSAAlgorithm
+from jwt import PyJWKClient
 import boto3
 import time
 
@@ -41,27 +41,23 @@ def get_user_pools():
 
     return user_pool_urls
 
-def get_jwks(issuer):
+def get_jwks_client(issuer):
     jwks_url = f"{issuer}/.well-known/jwks.json"
-    response = requests.get(jwks_url)
-    response.raise_for_status()
-    return response.json()
+    return PyJWKClient(jwks_url)
 
 def validate_jwt_token(token, trusted_issuers):
-    headers = jwt.get_unverified_header(token)
+    unverified_headers = jwt.get_unverified_header(token)
     issuer = jwt.decode(token, options={"verify_signature": False})['iss']
 
     if issuer not in trusted_issuers:
         print("Issuer not trusted")
         return None
 
-    jwks = get_jwks(issuer)
-    kid = headers['kid']
-    key = next(item for item in jwks['keys'] if item['kid'] == kid)
+    jwks_client = get_jwks_client(issuer)
+    signing_key = jwks_client.get_signing_key_from_jwt(token)
 
-    public_key = RSAAlgorithm.from_jwk(json.dumps(key))
     try:
-        payload = jwt.decode(token, public_key, algorithms=['RS256'], issuer=issuer)
+        payload = jwt.decode(token, signing_key.key, algorithms=['RS256'], audience=issuer, issuer=issuer)
         return payload
     except jwt.ExpiredSignatureError:
         print("Token has expired")
@@ -69,7 +65,6 @@ def validate_jwt_token(token, trusted_issuers):
     except jwt.InvalidTokenError:
         print("Invalid token")
         return None
-
 def lambda_handler(event, context):
     print("Received event:", json.dumps(event))
 
