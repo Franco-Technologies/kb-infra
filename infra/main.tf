@@ -45,18 +45,30 @@ module "ecs" {
 #   db_password       = var.db_password
 # }
 
+module "lambda" {
+  source = "./modules/lambda"
+  # Environment-specific variables
+  environment = local.env
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
+}
+
 module "api_gateway" {
   source = "./modules/api_gateway"
   # Environment-specific variables
-  name               = "${local.env}-tenant-management-api"
-  description        = "API Gateway for tenant management"
-  endpoint_types     = ["REGIONAL"]
-  authorization      = "NONE"
-  request_parameters = {}
-  stage_name         = local.env
-  root_path_part     = "{proxy+}"
-  nlb_dns_name       = module.load_balancer.nlb_dns_name
-  nlb_arn            = module.load_balancer.nlb_arn
+  name                 = "${local.env}-tenant-management-api"
+  description          = "API Gateway for tenant management"
+  endpoint_types       = ["REGIONAL"]
+  authorization        = "NONE"
+  request_parameters   = {}
+  stage_name           = local.env
+  root_path_part       = "{proxy+}"
+  nlb_dns_name         = module.load_balancer.nlb_dns_name
+  nlb_arn              = module.load_balancer.nlb_arn
+  authorizer_uri       = module.lambda.authorizer_uri
+  lambda_function_name = module.lambda.function_name
   tags = {
     Environment = "dev"
     Project     = "example"

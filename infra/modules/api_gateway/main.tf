@@ -2,11 +2,16 @@ resource "aws_api_gateway_rest_api" "this" {
   name        = var.name
   description = var.description
 
-  # endpoint_configuration {
-  #   types = var.endpoint_types
-  # }
-
   tags = var.tags
+}
+
+# Authorizer
+resource "aws_api_gateway_authorizer" "this" {
+  name            = "api_gateway_authorizer"
+  rest_api_id     = aws_api_gateway_rest_api.this.id
+  type            = "TOKEN"
+  authorizer_uri  = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/${var.authorizer_uri}/invocations"
+  identity_source = "method.request.header.Authorization"
 }
 
 resource "aws_api_gateway_resource" "root" {
@@ -15,11 +20,20 @@ resource "aws_api_gateway_resource" "root" {
   path_part   = var.root_path_part
 }
 
+resource "aws_lambda_permission" "api_gateway" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.lambda_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*/*"
+}
+
 resource "aws_api_gateway_method" "root_method" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.root.id
   http_method   = "ANY"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.this.id
 
   request_parameters = {
     "method.request.path.proxy" = true
@@ -49,7 +63,6 @@ resource "aws_api_gateway_integration" "proxy" {
     "integration.request.path.proxy" = "method.request.path.proxy"
   }
 }
-
 # logging
 resource "aws_api_gateway_account" "demo" {
   cloudwatch_role_arn = aws_iam_role.cloudwatch.arn

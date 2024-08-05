@@ -54,3 +54,13 @@ variable "nlb_arn" {
   description = "The ARN of the Network Load Balancer"
   type        = string
 }
+
+variable "authorizer_uri" {
+  description = "The URI of the authorizer"
+  type        = string
+}
+
+variable "lambda_function_name" {
+  description = "The name of the Lambda function"
+  type        = string
+}
