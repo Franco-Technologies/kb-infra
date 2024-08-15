@@ -22,6 +22,21 @@ resource "aws_lambda_permission" "api_gateway" {
   source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*/*"
 }
 
+# Root resource
+resource "aws_api_gateway_resource" "root" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
+  path_part   = "v1"
+}
+
+# Method
+resource "aws_api_gateway_method" "this" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.root.id
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+
 # deployment
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
