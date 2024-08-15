@@ -24,3 +24,7 @@ output "api_gateway_root_resource_id" {
 output "api_gateway_url" {
   value = module.api_gateway.api_gateway_url
 }
+
+output "authorizer_id" {
+  value = module.api_gateway.authorizer_id
+}

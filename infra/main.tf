@@ -58,5 +58,6 @@ module "ssm" {
     api_gateway_rest_api_id      = module.api_gateway.rest_api_id
     api_gateway_root_resource_id = module.api_gateway.root_resource_id
     api_gateway_url              = module.api_gateway.api_gateway_url
+    authorizer_id                = module.api_gateway.authorizer_id
   }
 }

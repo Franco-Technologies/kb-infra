@@ -10,3 +10,7 @@ output "api_gateway_url" {
 output "root_resource_id" {
   value = aws_api_gateway_resource.root.id
 }
+
+output "authorizer_id" {
+  value = aws_api_gateway_authorizer.this.id
+}
