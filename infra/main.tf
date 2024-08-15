@@ -50,7 +50,7 @@ module "ssm" {
   source = "./modules/ssm"
 
   # Environment-specific variables
-  param_name = "/${var.app_name}/${local.env}/appvars"
+  param_name = "/${var.app_name}-infra/${local.env}/appvars"
   outputs = {
     ecr_repository_url           = module.ecr.ecr_repository_url
     ecs_cluster_arn              = module.ecs.cluster_arn
