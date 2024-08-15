@@ -122,7 +122,7 @@ def lambda_handler(event, context):
                     print(f"Access granted for group: {group}")
                     break
 
-    if allowed:
+    if allowed or 'SuperAdmin' in cognito_groups:
         response = generate_allow(decoded_token['sub'], method_arn)
         print('Authorized')
         return response

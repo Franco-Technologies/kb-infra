@@ -14,13 +14,6 @@ resource "aws_api_gateway_authorizer" "this" {
 
   identity_source = "method.request.header.Authorization"
 }
-
-resource "aws_api_gateway_resource" "root" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
-  path_part   = var.root_path_part
-}
-
 resource "aws_lambda_permission" "api_gateway" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -29,41 +22,17 @@ resource "aws_lambda_permission" "api_gateway" {
   source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*/*"
 }
 
-resource "aws_api_gateway_method" "root_method" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.root.id
-  http_method   = "ANY"
-  authorization = "CUSTOM"
-  authorizer_id = aws_api_gateway_authorizer.this.id
-
-  request_parameters = {
-    "method.request.path.proxy" = true
-  }
-}
-
-resource "aws_api_gateway_vpc_link" "this" {
-  name        = "vpc-link"
-  description = "VPC Link for API Gateway"
-  target_arns = [var.nlb_arn]
-  tags        = var.tags
-}
-
-resource "aws_api_gateway_integration" "proxy" {
+# deployment
+resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.root.id
-  http_method = aws_api_gateway_method.root_method.http_method
-
-  type                    = "HTTP_PROXY"
-  integration_http_method = "ANY"
-  uri                     = "http://${var.nlb_dns_name}/{proxy}"
-  connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.this.id
-  timeout_milliseconds    = 29000
-
-  request_parameters = {
-    "integration.request.path.proxy" = "method.request.path.proxy"
+  triggers = {
+    redeployment = sha1(jsonencode({
+      stage_name = var.stage_name,
+    }))
   }
 }
+
+
 # logging
 resource "aws_api_gateway_account" "demo" {
   cloudwatch_role_arn = aws_iam_role.cloudwatch.arn
@@ -113,17 +82,6 @@ resource "aws_iam_role_policy" "cloudwatch" {
 resource "aws_cloudwatch_log_group" "api_gw_log_group" {
   name              = "/aws/api-gateway/${var.name}"
   retention_in_days = 14
-}
-
-
-# deployment
-resource "aws_api_gateway_deployment" "this" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  triggers = {
-    redeployment = sha1(jsonencode({
-      stage_name = var.stage_name,
-    }))
-  }
 }
 
 # stage
