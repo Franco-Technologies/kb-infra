@@ -52,9 +52,11 @@ module "ssm" {
   # Environment-specific variables
   param_name = "/${var.app_name}/${local.env}/appvars"
   outputs = {
-    ecr_repository_url          = module.ecr.ecr_repository_url
-    ecs_cluster_arn             = module.ecs.cluster_arn
-    ecs_task_execution_role_arn = module.ecs.role_arn
-    api_gateway_rest_api_id     = module.api_gateway.rest_api_id
+    ecr_repository_url           = module.ecr.ecr_repository_url
+    ecs_cluster_arn              = module.ecs.cluster_arn
+    ecs_task_execution_role_arn  = module.ecs.role_arn
+    api_gateway_rest_api_id      = module.api_gateway.rest_api_id
+    api_gateway_root_resource_id = module.api_gateway.root_resource_id
+    api_gateway_url              = module.api_gateway.api_gateway_url
   }
 }
