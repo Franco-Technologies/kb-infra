@@ -3,17 +3,14 @@ output "rest_api_id" {
   value       = aws_api_gateway_rest_api.this.id
 }
 
+output "api_gateway_url" {
+  value = aws_api_gateway_deployment.this.invoke_url
+}
+
 output "root_resource_id" {
-  description = "The ID of the root resource"
-  value       = aws_api_gateway_resource.root.id
+  value = aws_api_gateway_rest_api.this.root_resource_id
 }
 
-output "deployment_id" {
-  description = "The ID of the deployment"
-  value       = aws_api_gateway_deployment.this.id
-}
-
-output "vpc_link_id" {
-  description = "The ID of the VPC Link"
-  value       = aws_api_gateway_vpc_link.this.id
+output "authorizer_id" {
+  value = aws_api_gateway_authorizer.this.id
 }

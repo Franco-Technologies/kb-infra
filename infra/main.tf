@@ -1,47 +1,63 @@
-locals { env = var.is_prod_branch == true ? ["prod"] : ["dev"] }
+locals { env = var.is_prod_branch == true ? "prod" : "dev" }
 
-provider "aws" {
-  region = var.aws_region
-}
-
-module "vpc" {
-  source = "../../modules/vpc"
+module "ecr" {
+  source = "./modules/ecr"
   # Environment-specific variables
-  vpc_cidr     = var.vpc_cidr
-  env          = var.env
+  app_name = var.app_name
+  env      = local.env
 }
+
 
 module "ecs" {
-  source = "../../modules/ecs"
+  source = "./modules/ecs"
   # Environment-specific variables
-  vpc_id       = module.vpc.vpc_id
-  cluster_name = "${local.env}-tenant-management-cluster"
+  env = local.env
 }
 
-module "rds" {
-  source = "../../modules/rds"
+module "lambda" {
+  source = "./modules/lambda"
   # Environment-specific variables
-  vpc_id            = module.vpc.vpc_id
-  subnet_ids        = module.vpc.private_subnet_ids
-  db_instance_class = var.db_instance_class
-  db_name           = "${local.env}_tenant_management"
+  environment = local.env
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
 }
 
 module "api_gateway" {
-  source = "../../modules/api_gateway"
+  source = "./modules/api_gateway"
   # Environment-specific variables
-  name = "${local.env}-tenant-management-api"
-  description         = "API Gateway for tenant management"
-  endpoint_types      = ["REGIONAL"]
-  authorization       = "NONE"
-  request_parameters  = {}
-  stage_name          = local.env
-  root_path_part      = "/"
-  vpc_link_name       = "ecs-vpc-link"
-  target_arns         = [module.ecs.service_arn]
-  ecs_service_url     = module.ecs.service_url
-  tags                = {
-    Environment       = "dev"
-    Project           = "example"
+  name                 = "${local.env}-tenant-management-api"
+  description          = "API Gateway for tenant management"
+  stage_name           = local.env
+  authorizer_uri       = module.lambda.qualified_invoke_arn
+  lambda_function_name = module.lambda.function_name
+  tags = {
+    Environment = "dev"
+    Project     = "example"
+  }
+}
+
+module "ssm" {
+  providers = {
+    aws = aws.default
+  }
+  depends_on = [
+    module.ecr,
+    module.ecs,
+    module.api_gateway
+  ]
+  source = "./modules/ssm"
+
+  # Environment-specific variables
+  param_name = "/${var.app_name}-infra/${local.env}/appvars"
+  outputs = {
+    ecr_repository_url           = module.ecr.ecr_repository_url
+    ecs_cluster_arn              = module.ecs.cluster_arn
+    ecs_task_execution_role_arn  = module.ecs.role_arn
+    api_gateway_rest_api_id      = module.api_gateway.rest_api_id
+    api_gateway_root_resource_id = module.api_gateway.root_resource_id
+    api_gateway_url              = module.api_gateway.api_gateway_url
+    authorizer_id                = module.api_gateway.authorizer_id
   }
 }

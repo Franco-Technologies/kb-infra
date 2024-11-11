@@ -7,38 +7,22 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-# resource "aws_ecs_task_definition" "app" {
-#   family                   = "${var.env}-tenant-management-task"
-#   network_mode             = "awsvpc"
-#   requires_compatibilities = ["FARGATE"]
-#   cpu                      = var.task_cpu
-#   memory                   = var.task_memory
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecsTaskExecutionRole-kb"
 
-#   container_definitions = jsonencode([
-#     {
-#       name  = "tenant-management-container"
-#       image = var.container_image
-#       portMappings = [
-#         {
-#           containerPort = 80
-#           hostPort      = 80
-#         }
-#       ]
-#     }
-#   ])
-# }
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+    }]
+  })
+}
 
-# resource "aws_ecs_service" "app" {
-#   name            = "${var.env}-tenant-management-service"
-#   cluster         = aws_ecs_cluster.main.id
-#   task_definition = aws_ecs_task_definition.app.arn
-#   launch_type     = "FARGATE"
-#   desired_count   = var.service_desired_count
-
-#   network_configuration {
-#     subnets         = var.subnet_ids
-#     security_groups = [aws_security_group.ecs_tasks.id]
-#   }
-# }
-
-# Add security group for ECS tasks
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}

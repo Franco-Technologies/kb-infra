@@ -9,24 +9,6 @@ variable "description" {
   default     = ""
 }
 
-variable "endpoint_types" {
-  description = "The endpoint types for the API Gateway"
-  type        = list(string)
-  default     = ["EDGE"]
-}
-
-variable "authorization" {
-  description = "The authorization type for the API Gateway method"
-  type        = string
-  default     = "NONE"
-}
-
-variable "request_parameters" {
-  description = "The request parameters for the API Gateway method"
-  type        = map(string)
-  default     = {}
-}
-
 variable "stage_name" {
   description = "The stage name for the deployment"
   type        = string
@@ -39,24 +21,12 @@ variable "tags" {
   default     = {}
 }
 
-variable "root_path_part" {
-  description = "The root path part for the API Gateway"
+variable "authorizer_uri" {
+  description = "The URI of the authorizer"
   type        = string
-  default     = "/"
 }
 
-variable "vpc_link_name" {
-  description = "The name of the VPC Link"
-  type        = string
-  default     = "ecs-vpc-link"
-}
-
-variable "target_arns" {
-  description = "The ARNs of the targets for the VPC Link"
-  type        = list(string)
-}
-
-variable "ecs_service_url" {
-  description = "The URL of the ECS service"
+variable "lambda_function_name" {
+  description = "The name of the Lambda function"
   type        = string
 }

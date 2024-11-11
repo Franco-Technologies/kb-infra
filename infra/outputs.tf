@@ -1,17 +1,30 @@
-output "vpc_id" {
-  value = module.vpc.vpc_id
+# ECR
+output "ecr_repository_url" {
+  value = module.ecr.ecr_repository_url
 }
 
+# ECS
 output "ecs_cluster_arn" {
   value = module.ecs.cluster_arn
 }
 
-output "rds_endpoint" {
-  value = module.rds.db_endpoint
+output "ecs_task_execution_role_arn" {
+  value = module.ecs.role_arn
 }
 
-# output "s3_bucket_name" {
-#   value = module.s3.bucket_name
-# }
+# API Gateway
+output "api_gateway_rest_api_id" {
+  value = module.api_gateway.rest_api_id
+}
 
-# Add other relevant outputs
+output "api_gateway_root_resource_id" {
+  value = module.api_gateway.root_resource_id
+}
+
+output "api_gateway_url" {
+  value = module.api_gateway.api_gateway_url
+}
+
+output "authorizer_id" {
+  value = module.api_gateway.authorizer_id
+}
